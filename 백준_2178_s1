@@ -1,0 +1,72 @@
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <cassert>
+#include <deque>
+#include <queue>
+
+using namespace std;
+
+int arr[101][101];
+int dist[101][101];
+bool visit[101][101];
+int dx[4] = { 1,0,-1,0 };
+int dy[4] = { 0,1,0,-1 };
+int N, M;
+int l = 1;
+
+
+void BFS(int x_0, int y_0) // 시작점은 0,0
+{
+    visit[x_0][y_0] = true; // 방문한곳 true로 체크
+    queue<pair<int, int>> q; // 좌표저장할 Queue
+
+    q.push(make_pair(x_0, y_0));
+    while (!q.empty())
+    {
+        int x = q.front().first;
+        int y = q.front().second; // (x,y) 저장
+
+        q.pop();
+        for (int i = 0; i < 4; i++)
+        {
+            int x_next = x + dx[i];
+            int y_next = y + dy[i];
+
+            if ((x_next >= 0 && x_next < N) && (y_next >= 0 && y_next < M) && visit[x_next][y_next] == false)
+            {
+                if (arr[x_next][y_next] == true && visit[x_next][y_next] == false)
+                {
+                    visit[x_next][y_next] = true;
+                    dist[x_next][y_next] = dist[x][y] + 1;
+                    q.push(make_pair(x_next, y_next));
+                }
+            }
+        }
+    }
+}
+int main()
+{
+    string zerone;
+    cin >> N >> M;
+
+    for (int i = 0; i < N; i++)
+    {
+        cin >> zerone;
+        for (int j = 0; j < M; j++)
+        {
+            int one = zerone[j] - '0';
+            arr[i][j] = one;
+        }
+    }
+
+    BFS(0, 0);
+    int d = dist[N - 1][M - 1] + 1;
+    cout << d << endl;
+
+
+
+    return 0;
+}
