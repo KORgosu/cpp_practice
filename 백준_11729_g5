@@ -1,0 +1,43 @@
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <cassert>
+#include <deque>
+#include <queue>
+
+
+// cin, cout 을 scanf, printf로 대체
+using namespace std;
+
+void hanoi(int n, int front, int mid, int end)
+{
+    if (n == 1)
+    {
+        printf("%d %d\n", front, end);
+        //cout << front << " " << end << endl;
+    }
+    else
+    {
+        hanoi(n - 1, front, end, mid); // 1 -> 2
+        printf("%d %d\n", front, end);
+        //cout << front << " " << end << endl; // 1 -> 3 과정
+        hanoi(n - 1, mid, front, end); // 2 -> 3
+    }
+}
+
+int main()
+{
+    int N;
+    int cnt;
+    scanf_s("%d", &N);
+    //cin >> N;
+
+    cnt = pow(2, N) -1; // pow 쓸 시 시간초과뜸 왜지? -> cin, cout이 printf scanf보다 메모리를 더 많이먹나보다..
+    printf("%d\n", cnt);
+    //cout << cnt << endl;
+    hanoi(N, 1, 2, 3);
+
+    return 0;
+}
