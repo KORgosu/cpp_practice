@@ -1,0 +1,87 @@
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <cassert>
+#include <deque>
+#include <queue>
+
+using namespace std;
+
+vector<vector<int>> graph;
+vector<bool> visit;
+
+void DFS(int v) // v는 시작점
+{
+    cout << v << " ";
+    visit[v] = true;
+
+    for (int i : graph[v])
+    {
+        if (visit[i] == false)
+        {
+            DFS(i);
+        }
+    }
+}
+
+void BFS(int v)
+{
+    queue<int> q;
+    q.push(v);
+    visit[v] = true;
+
+    while (q.empty() == false)
+    {
+        int v_next = q.front();
+        q.pop();
+        cout << v_next << " ";
+
+        for (int i : graph[v_next])
+        {
+            if (visit[i] == false)
+            {
+                q.push(i);
+                visit[i] = true;
+            }
+        }
+    }
+}
+
+int main()
+{
+    int N, M, V;
+    cin >> N >> M >> V; // N은 정점개수 M은 간선개수 V는 정점번호
+
+    graph.resize(N + 1); // 1-based
+    visit.resize(N + 1, false); // 방문 체크용 벡터도 동일하게, 들리지 않은 것으로 초기화
+
+
+    for (int i = 0; i < M; i++)
+    {
+        int start, end;
+        cin >> start >> end;
+
+        // 시작점, 끝나는 점을 표시
+        graph[start].push_back(end);
+        graph[end].push_back(start);
+    }
+
+    for (int i = 1; i <= N; i++)
+    {
+        // i번 정점과 연결된 다음 정점을 찾아가기, 작은것부터 방문하기 위해 그래프 정렬하여 순서 정하기
+        sort(graph[i].begin(), graph[i].end());
+    }
+
+    DFS(V);
+    cout << endl;
+
+    // visit.resize(N + 1, false); 를 사용못하는 이유 : 크기가 이미 N+1일 경우 아무것도 안함
+    fill(visit.begin(), visit.end(), false);
+
+    BFS(V);
+    cout << endl;
+
+    return 0;
+}
