@@ -1,0 +1,55 @@
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <cassert>
+#include <deque>
+#include <queue>
+
+using namespace std;
+
+vector <vector<char>> star;
+
+void makeStar(int start_x, int start_y, int N)
+{
+    if (N == 1)
+    {
+        star[start_x][start_y] = '*';
+        return;
+    }
+
+    int resize = N / 3;
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            if (i == 1 && j == 1) // 3 * 3에서 중간을 비움
+            {
+                continue;
+            }
+            makeStar(start_x + resize * i, start_y + resize * j, resize);
+        }
+    }
+}
+
+int main()
+{
+    int N;
+    cin >> N;
+
+    star = vector<vector<char>>(N, vector<char>(N, ' ')); // 초기화
+
+    makeStar(0, 0, N);
+
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            cout << star[i][j];
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
