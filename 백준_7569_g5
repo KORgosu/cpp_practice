@@ -1,0 +1,107 @@
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <cassert>
+#include <deque>
+#include <queue>
+
+using namespace std;
+
+int M, N, H;
+int box[101][101][101];
+bool visit[101][101][101];
+
+int dx[6] = { 1, -1, 0, 0, 0, 0 };
+int dy[6] = { 0, 0, 1, -1, 0, 0 };
+int dz[6] = { 0, 0, 0, 0, 1, -1 };
+
+queue<pair<pair<int, int>, int>> q;
+
+int date = 0; // 걸리는 날짜
+
+void BFS3D()
+{
+    while (q.empty() == false)
+    {
+        int current_x = q.front().first.first;
+        int current_y = q.front().first.second;
+        int current_z = q.front().second;
+        q.pop();
+
+        for (int i = 0; i < 6; i++)
+        {
+            int next_x = current_x + dx[i];
+            int next_y = current_y + dy[i];
+            int next_z = current_z + dz[i];
+
+            if ((next_x >= 0 && next_x < M) && (next_y >= 0 && next_y < N) && (next_z >= 0 && next_z < H) && visit[next_z][next_y][next_x] == false && box[next_z][next_y][next_x] == 0)
+            {
+                // box에 날짜 표기
+                box[next_z][next_y][next_x] = box[current_z][current_y][current_x] + 1;
+
+                // 들린곳은 true로
+                visit[next_z][next_y][next_x] = true;
+
+                // 새로 익은곳에 대한 좌표 큐에 추가
+                q.push(make_pair(make_pair(next_x, next_y), next_z));
+            }
+        }
+    }
+
+    for (int z = 0; z < H; z++) // BFS후 0인곳이 있으면 전부 못익는다는 뜻임
+    {
+        for (int y = 0; y < N; y++)
+        {
+            for (int x = 0; x < M; x++)
+            {
+                if (box[z][y][x] == 0)
+                {
+                    date = -1;
+                    return;
+                }
+
+                if (date < box[z][y][x])
+                {
+                    date = box[z][y][x];
+                }
+            }
+        }
+    }
+
+    date--;
+}
+
+
+int main()
+{
+    cin >> M >> N >> H; // M : x(가로)                N : y(세로)              H : z(높이)
+
+    for (int z = 0; z < H; z++) // 토마토 입력
+    {
+        for (int y = 0; y < N; y++)
+        {
+            for (int x = 0; x < M; x++)
+            {
+                int tomato;
+                cin >> tomato;
+                box[z][y][x] = tomato;
+                if (tomato == 1) // 익은 토마토가 있는 곳은 큐에 저장
+                {
+                    q.push(make_pair(make_pair( x, y ), z));
+                }
+                if (tomato == -1) // 토마토가 없는 곳은 갈 필요가 없음
+                {
+                    visit[z][y][x] = true;
+                }
+            }
+        }
+    }
+
+    BFS3D();
+
+    cout << date;
+
+    return 0;
+}
