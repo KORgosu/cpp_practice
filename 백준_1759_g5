@@ -1,0 +1,84 @@
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <cassert>
+#include <deque>
+#include <queue>
+
+using namespace std;
+
+bool isVowel(char c) // 모음 판단
+{
+    return c == 'a' || c == 'e' || c == 'o' || c == 'i' || c == 'u';
+}
+
+bool isValidCombination(const vector<char>& PW) // 최소 1개의 모음과 2개의 자음
+{
+    int vowel = 0;
+    int consonant = 0;
+
+    for (char ch : PW)
+    {
+        if (isVowel(ch))
+        {
+            vowel++;
+        }
+        else
+        {
+            consonant++;
+        }
+    }
+
+    return vowel >= 1 && consonant >= 2; // 참이면 트루, 아니면 false
+}
+
+
+// 조합생성
+void makeCombination(vector<char>& alphabets, vector<char>& PW, int start, int L)
+{
+    if (PW.size() == L) // password의 수가 L이랑 같을때 출력
+    {
+        if (isValidCombination(PW)) // 조합이 모음1개이상, 자음2개이상일때 출력
+        {
+            for (char ch : PW)
+            {
+                cout << ch;
+            }
+            cout << endl;
+            return;
+        }
+    }
+
+    // 조합생성, DFS
+    for (int i = start; i < alphabets.size(); i++)
+    {
+        PW.push_back(alphabets[i]);
+        makeCombination(alphabets, PW, i + 1, L);
+        PW.pop_back();
+    }
+}
+
+vector <char> alphabets;
+
+int main()
+{
+    int L, C;
+    vector <char> PW;
+    cin >> L >> C;
+
+    for (int i = 0; i < C; i++)
+    {
+        char alphabet;
+        cin >> alphabet;
+        alphabets.push_back(alphabet);
+    }
+
+    sort(alphabets.begin(), alphabets.end()); // 입력된 알파벳 오름차순정리
+
+    makeCombination(alphabets, PW, 0, L);
+    
+
+    return 0;
+}
